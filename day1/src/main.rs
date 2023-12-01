@@ -34,32 +34,30 @@ fn part2(input: &str) -> usize {
         .enumerate()
         .map(|(i, line)| {
             let patterns = &[
-                "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-                "1", "2", "3", "4", "5", "6", "7", "8", "9",
+                "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "1", "2",
+                "3", "4", "5", "6", "7", "8", "9",
             ];
             let ac = AhoCorasick::new(patterns).unwrap();
-            let mut digit_iter = ac.find_iter(line).map(|s| {
-                match &line[s.start()..s.end()] {
-                    "one" => "1",
-                    "two" => "2",
-                    "three" => "3",
-                    "four" => "4",
-                    "five" => "5",
-                    "six" => "6",
-                    "seven" => "7",
-                    "eight" => "8",
-                    "nine" => "9",
-                    "1" => "1",
-                    "2" => "2",
-                    "3" => "3",
-                    "4" => "4",
-                    "5" => "5",
-                    "6" => "6",
-                    "7" => "7",
-                    "8" => "8",
-                    "9" => "9",
-                    _ => panic!("Unexpected pattern match"),
-                }
+            let mut digit_iter = ac.find_iter(line).map(|s| match &line[s.start()..s.end()] {
+                "one" => "1",
+                "two" => "2",
+                "three" => "3",
+                "four" => "4",
+                "five" => "5",
+                "six" => "6",
+                "seven" => "7",
+                "eight" => "8",
+                "nine" => "9",
+                "1" => "1",
+                "2" => "2",
+                "3" => "3",
+                "4" => "4",
+                "5" => "5",
+                "6" => "6",
+                "7" => "7",
+                "8" => "8",
+                "9" => "9",
+                _ => panic!("Unexpected pattern match"),
             });
 
             {

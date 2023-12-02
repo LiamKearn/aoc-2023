@@ -1,6 +1,13 @@
 mod parser;
 use parser::parse_input;
 
+const REAL_GAME_PREDICATE: Subset =
+    Subset {
+        red: 12,
+        green: 13,
+        blue: 14,
+    };
+
 #[derive(Default, Debug)]
 pub struct Subset {
     red: usize,
@@ -9,11 +16,11 @@ pub struct Subset {
 }
 
 impl Subset {
-    fn is_possible_within(&self, other: &Subset) -> bool {
+    const fn is_possible_within(&self, other: &Self) -> bool {
         self.red <= other.red && self.green <= other.green && self.blue <= other.blue
     }
 
-    fn power(&self) -> usize {
+    const fn power(&self) -> usize {
         self.red * self.green * self.blue
     }
 }
@@ -27,13 +34,33 @@ pub struct Game {
 impl Game {
     fn maximum_values(&self) -> Subset {
         let (mut red, mut green, mut blue) = (0, 0, 0);
-        for s in self.revealed_subsets.iter() {
-            red = red.max(s.red);
-            green = green.max(s.green);
-            blue = blue.max(s.blue);
+        for set in &self.revealed_subsets {
+            red = red.max(set.red);
+            green = green.max(set.green);
+            blue = blue.max(set.blue);
         }
         Subset { red, green, blue }
     }
+}
+
+fn games_unwrapped(input: &str) -> Vec<Game> {
+    let (_, games) = parse_input(input).expect("Failed to parse input data");
+    games
+}
+
+fn part1(input: &str) -> usize {
+    games_unwrapped(input)
+        .iter()
+        .filter(|game| game.maximum_values().is_possible_within(&REAL_GAME_PREDICATE))
+        .map(|game| game.id)
+        .sum()
+}
+
+fn part2(input: &str) -> usize {
+    games_unwrapped(input)
+        .iter()
+        .map(|game| game.maximum_values().power())
+        .sum()
 }
 
 fn main() {
@@ -43,31 +70,15 @@ fn main() {
     dbg!(part2(ACTUAL_INPUT));
 }
 
-fn part1(input: &str) -> usize {
-    let (_, s) = parse_input(input).unwrap();
-    let real_game_predicate = Subset {
-        red: 12,
-        green: 13,
-        blue: 14,
-    };
-    s.iter()
-        .filter(|g| g.maximum_values().is_possible_within(&real_game_predicate))
-        .map(|g| g.id)
-        .sum()
-}
-
-fn part2(input: &str) -> usize {
-    let (_, s) = parse_input(input).unwrap();
-    s.iter().map(|g| g.maximum_values().power()).sum()
-}
-
-pub const EXAMPLE_INPUT: &str = r#"Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+#[allow(clippy::all)]
+const EXAMPLE_INPUT: &str = "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
 Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
 Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
 Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
-Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"#;
+Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green";
 
-const ACTUAL_INPUT: &str = r#"Game 1: 4 red, 3 blue; 6 blue, 16 green; 9 blue, 13 green, 1 red; 10 green, 4 red, 6 blue
+#[allow(clippy::all)]
+const ACTUAL_INPUT: &str = "Game 1: 4 red, 3 blue; 6 blue, 16 green; 9 blue, 13 green, 1 red; 10 green, 4 red, 6 blue
 Game 2: 2 green, 3 blue; 11 red; 2 green, 5 red, 1 blue
 Game 3: 19 green, 4 blue, 13 red; 1 green, 1 blue, 1 red; 17 red, 18 green
 Game 4: 4 green, 8 blue, 20 red; 19 red, 3 green, 14 blue; 15 red, 4 green, 1 blue; 18 blue, 14 red; 19 red, 10 blue; 3 green, 11 blue, 15 red
@@ -166,4 +177,4 @@ Game 96: 1 red, 7 blue, 2 green; 5 green; 3 red, 5 green, 11 blue
 Game 97: 8 green, 6 red; 1 blue, 6 red, 10 green; 1 blue, 6 red
 Game 98: 2 green, 8 red, 1 blue; 9 green, 2 blue, 7 red; 1 blue, 2 red, 11 green; 8 red, 10 green, 2 blue
 Game 99: 3 blue, 2 red; 1 blue, 3 green, 3 red; 1 red, 3 green; 2 green, 2 red, 2 blue
-Game 100: 7 blue, 6 red, 5 green; 3 blue, 13 green, 11 red; 6 red, 13 green, 14 blue; 8 red, 10 blue, 15 green"#;
+Game 100: 7 blue, 6 red, 5 green; 3 blue, 13 green, 11 red; 6 red, 13 green, 14 blue; 8 red, 10 blue, 15 green";

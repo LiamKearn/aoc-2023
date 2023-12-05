@@ -13,7 +13,7 @@ fn part1(input: &str) -> usize {
         .map(|game| {
             let mut score: usize = 0;
 
-            // Who is regex, where do I find him?
+            // Who is regex, where do I find them?
             let (actual, ours) = game
                 .trim_start_matches("Card")
                 .trim_start_matches(' ')
@@ -49,7 +49,7 @@ fn part1(input: &str) -> usize {
 fn part2(input: &str) -> usize {
     let lines: Vec<_> = input.lines().collect();
     let compute_matches = |s: &str| {
-        // Who is regex, where do I find him?
+        // Who is regex, where do I find them?
         let (actual, ours) = s
             .trim_start_matches("Card")
             .trim_start_matches(' ')
